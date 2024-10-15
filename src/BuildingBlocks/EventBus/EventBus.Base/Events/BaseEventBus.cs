@@ -1,5 +1,6 @@
-﻿,using EventBus.Base.Abstraction;
+﻿using EventBus.Base.Abstraction;
 using EventBus.Base.SubManagers;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
 namespace EventBus.Base.Events;
@@ -29,18 +30,15 @@ public abstract class BaseEventBus : IEventBus
 
         return eventName;
     }
-
     public virtual string GetSubName(string eventName)
     {
         return $"{EventBusConfig.SubscriptionClientAppName}.{ProcessEventName(eventName)}";
     }
-
     public virtual void Dispose()
     {
         EventBusConfig = null;
         SubsManager.Clear();
     }
-
     public async Task<bool> ProcessEvent(string eventName, string message)
     {
         eventName = ProcessEventName(eventName);
@@ -76,9 +74,7 @@ public abstract class BaseEventBus : IEventBus
     }
 
     public abstract void Publish(IntegrationEvent @event);
-
     public abstract void Subscribe<T, TH>() where T : IntegrationEvent where TH : IIntegrationEventHandler<T>;
-
     public abstract void UnSubscribe<T, TH>() where T : IntegrationEvent where TH : IIntegrationEventHandler<T>;
 
 }
