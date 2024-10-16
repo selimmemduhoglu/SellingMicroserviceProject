@@ -67,7 +67,7 @@ public class EventBusRabbitMQ : BaseEventBus
 
         policy.Execute(() =>
         {
-            var properties = consumerChannel.CreateBasicProperties();
+            IBasicProperties properties = consumerChannel.CreateBasicProperties();
 
             properties.DeliveryMode = 2; // persistent
 
