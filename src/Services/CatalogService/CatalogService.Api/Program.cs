@@ -1,76 +1,86 @@
 using CatalogService.Api.Extensions;
-using CatalogService.Api.Infrastructure;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.OpenApi.Models;
+using CatalogService.Api.Infrastructure.Context;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Serilog;
+using System;
+using System.IO;
 
-string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-
-// Configuration setup for appsettings.json and environment-specific settings
-IConfigurationRoot configuration = new ConfigurationBuilder()
-    .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile($"Configurations/appsettings.json", optional: false)
-    .AddJsonFile($"Configurations/appsettings.{env}.json", optional: true)
-    .AddEnvironmentVariables()
-    .Build();
-
-builder.Configuration.AddConfiguration(configuration);
-
-// Configuration setup for serilog.json and environment-specific settings
-IConfigurationRoot serilogConfiguration = new ConfigurationBuilder()
-    .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile($"Configurations/serilog.json", optional: false)
-    .AddJsonFile($"Configurations/serilog.{env}.json", optional: true)
-    .AddEnvironmentVariables()
-    .Build();
-
-// Configure Serilog
-Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(serilogConfiguration)
-    .CreateLogger();
-
-builder.Host.UseSerilog();
-
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
+namespace CatalogService.Api
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "CatalogService.Api", Version = "v1" });
-});
-builder.Services.Configure<CatalogSettings>(builder.Configuration.GetSection("CatalogSettings"));
+    public class Program
+    {
+        private static string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
-// Add DbContext configuration
-builder.Services.ConfigureDbContext(builder.Configuration);
+        private static IConfiguration configuration
+        {
+            get
+            {
+                return new ConfigurationBuilder()
+                    .SetBasePath(System.IO.Directory.GetCurrentDirectory())
+                    .AddJsonFile($"appsettings.json", optional: false)
+                    .AddJsonFile($"appsettings.{env}.json", optional: true)
+                    .AddEnvironmentVariables()
+                    .Build();
+            }
+        }
 
-// Add Consul configuration
-builder.Services.ConfigureConsul(builder.Configuration);
+        private static IConfiguration serilogConfiguration
+        {
+            get
+            {
+                return new ConfigurationBuilder()
+                    .SetBasePath(System.IO.Directory.GetCurrentDirectory())
+                    .AddJsonFile($"serilog.json", optional: false)
+                    .AddJsonFile($"serilog.{env}.json", optional: true)
+                    .AddEnvironmentVariables()
+                    .Build();
+            }
+        }
 
-var app = builder.Build();
+        public static IWebHost BuildWebHost(IConfiguration configuration, string[] args)
+        {
+            return WebHost.CreateDefaultBuilder()
+                .UseDefaultServiceProvider((context, options) =>
+                {
+                    options.ValidateOnBuild = false;
+                    options.ValidateScopes = false;
+                })
+                .ConfigureAppConfiguration(i => i.AddConfiguration(configuration))
+                .UseWebRoot("Pics")
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                .UseStartup<Startup>()
+                .ConfigureLogging(i => i.ClearProviders())
+                .UseSerilog()
+                .Build();
+        }
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CatalogService.Api v1"));
+        public static void Main(string[] args)
+        {
+            var host = BuildWebHost(configuration, args);
+
+            host.MigrateDbContext<CatalogContext>((context, services) =>
+            {
+                var env = services.GetService<IWebHostEnvironment>();
+                var logger = services.GetService<ILogger<CatalogContextSeed>>();
+
+                new CatalogContextSeed()
+                    .SeedAsync(context, env, logger)
+                    .Wait();
+            });
+
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(serilogConfiguration)
+                .CreateLogger();
+
+            Log.Logger.Information("Application is Running....");
+
+            host.Run();
+        }
+
+    }
 }
-
-app.UseHttpsRedirection();
-
-app.UseStaticFiles(new StaticFileOptions()
-{
-    FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "Pics")),
-    RequestPath = "/pics"
-});
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.RegisterWithConsul(app.Lifetime, builder.Configuration);
-
-app.Run();

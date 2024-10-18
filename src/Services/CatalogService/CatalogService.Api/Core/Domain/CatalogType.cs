@@ -1,7 +1,9 @@
-﻿namespace CatalogService.Api.Core.Domain;
-
-public class CatalogType
+﻿namespace CatalogService.Api.Core.Domain.Entities
 {
-    public int Id { get; set; }
-    public string Type { get; set; } = default!;
+    public class CatalogType
+    {
+        public int Id { get; set; }
+
+        public string Type { get; set; }
+    }
 }

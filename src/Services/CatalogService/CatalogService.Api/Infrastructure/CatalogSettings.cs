@@ -1,6 +1,12 @@
-﻿namespace CatalogService.Api.Infrastructure;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-public class CatalogSettings
+namespace CatalogService.Api.Infrastructure
 {
-    public string PicBaseUrl { get; set; } = default!;
+    public class CatalogSettings
+    {
+        public string PicBaseUrl { get; set; }
+    }
 }

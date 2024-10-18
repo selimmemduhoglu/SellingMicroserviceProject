@@ -1,10 +1,9 @@
-﻿namespace CatalogService.Api.Core.Domain;
-
-public class CatalogBrand
+﻿namespace CatalogService.Api.Core.Domain.Entities
 {
-    public int Id { get; set; }
-    public string Brand { get; set; } = default!;
+    public class CatalogBrand
+    {
+        public int Id { get; set; }
 
+        public string Brand { get; set; }
+    }
 }
-
-

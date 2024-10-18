@@ -1,25 +1,25 @@
-﻿using CatalogService.Api.Core.Domain;
+﻿using CatalogService.Api.Core.Domain.Entities;
 using CatalogService.Api.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace CatalogService.Api.Infrastructure.EntityConfigurations;
-
-public class CatalogBrandEntityTypeConfiguration : IEntityTypeConfiguration<CatalogBrand>
+namespace CatalogService.Api.Infrastructure.EntityConfigurations
 {
-    public void Configure(EntityTypeBuilder<CatalogBrand> builder)
+    class CatalogBrandEntityTypeConfiguration : IEntityTypeConfiguration<CatalogBrand>
     {
-        builder.ToTable("CatalogBrand", CatalogContext.DEFAULT_SCHEMA); // BU isimde bir tablo oluştur demek ve schema sının ismide bu olsun dedik.
+        public void Configure(EntityTypeBuilder<CatalogBrand> builder)
+        {
+            builder.ToTable("CatalogBrand", CatalogContext.DEFAULT_SCHEMA);
 
-        builder.HasKey(ci => ci.Id);
+            builder.HasKey(ci => ci.Id);
 
-        builder.Property(ci => ci.Id)
-            .UseHiLo("catalog_brand_hilo") //Hilo veritabanında otomatik artan sayaç için.
-            .IsRequired();
+            builder.Property(ci => ci.Id)
+               .UseHiLo("catalog_brand_hilo")
+               .IsRequired();
 
-        builder.Property(ci => ci.Brand)
-            .IsRequired()
-            .HasMaxLength(100);
-
+            builder.Property(cb => cb.Brand)
+                .IsRequired()
+                .HasMaxLength(100);
+        }
     }
 }

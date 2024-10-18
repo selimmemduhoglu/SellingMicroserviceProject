@@ -1,15 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace CatalogService.Api.Infrastructure.Context;
-
-public class CatalogContextDesignFactory : IDesignTimeDbContextFactory<CatalogContext>
+namespace CatalogService.Api.Infrastructure.Context
 {
-    public CatalogContext CreateDbContext(string[] args)
+    public class CatalogContextDesignFactory : IDesignTimeDbContextFactory<CatalogContext>
     {
-        var optionsBuilder = new DbContextOptionsBuilder<CatalogContext>()
-             .UseSqlServer("Data Source=c_sqlserver;Initial Catalog=catalog;Persist Security Info=True;User ID=sa;Password=Selim123!");
+        public CatalogContext CreateDbContext(string[] args)
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<CatalogContext>()
+                .UseSqlServer("Server=VICTUS-SELIM;Database=catalog;Trusted_Connection=True;");
 
-        return new CatalogContext(optionsBuilder.Options);
+            return new CatalogContext(optionsBuilder.Options);
+        }
     }
 }

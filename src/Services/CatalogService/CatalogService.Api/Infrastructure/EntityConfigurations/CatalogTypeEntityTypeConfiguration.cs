@@ -1,24 +1,26 @@
-﻿using CatalogService.Api.Core.Domain;
+﻿using CatalogService.Api.Core.Domain.Entities;
 using CatalogService.Api.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace CatalogService.Api.Infrastructure.EntityConfigurations;
-
-public class CatalogTypeEntityTypeConfiguration : IEntityTypeConfiguration<CatalogType>
+namespace CatalogService.Api.Infrastructure.EntityConfigurations
 {
-    public void Configure(EntityTypeBuilder<CatalogType> builder)
+    class CatalogTypeEntityTypeConfiguration
+        : IEntityTypeConfiguration<CatalogType>
     {
-        builder.ToTable("CatalogType", CatalogContext.DEFAULT_SCHEMA); 
+        public void Configure(EntityTypeBuilder<CatalogType> builder)
+        {
+            builder.ToTable("CatalogType", CatalogContext.DEFAULT_SCHEMA);
 
-        builder.HasKey(ci => ci.Id);
+            builder.HasKey(ci => ci.Id);
 
-        builder.Property(ci => ci.Id)
-            .UseHiLo("catalog_type_hilo") 
-            .IsRequired();
+            builder.Property(ci => ci.Id)
+               .UseHiLo("catalog_type_hilo")
+               .IsRequired();
 
-        builder.Property(ci => ci.Type)
-            .IsRequired()
-            .HasMaxLength(100);
+            builder.Property(cb => cb.Type)
+                .IsRequired()
+                .HasMaxLength(100);
+        }
     }
 }

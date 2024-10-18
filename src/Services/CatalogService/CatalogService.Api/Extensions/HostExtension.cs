@@ -1,21 +1,29 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Polly;
+using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CatalogService.Api.Extensions
 {
     public static class HostExtension
     {
-        public static IWebHost MigrateDbContext<TContext>(this IWebHost host, Action<TContext, IServiceProvider> seeder)
+        public static IWebHost MigrateDbContext<TContext>(this IWebHost host, Action<TContext, IServiceProvider> seeder) 
             where TContext : DbContext
         {
-            using (IServiceScope scope = host.Services.CreateScope())
+            using (var scope = host.Services.CreateScope())
             {
-                IServiceProvider services = scope.ServiceProvider;
+                var services = scope.ServiceProvider;
 
-                ILogger<TContext> logger = services.GetRequiredService<ILogger<TContext>>();
+                var logger = services.GetRequiredService<ILogger<TContext>>();
 
-                TContext context = services.GetService<TContext>();
+                var context = services.GetService<TContext>();
 
                 try
                 {
@@ -45,8 +53,8 @@ namespace CatalogService.Api.Extensions
         private static void InvokeSeeder<TContext>(Action<TContext, IServiceProvider> seeder, TContext context, IServiceProvider services)
             where TContext : DbContext
         {
-            context.Database.EnsureCreated(); // veri tabanının noluşturulup oluşturlmadığı bilgisi sağlayacak ve oluşturulmadıysa oluşturulacak.
-            context.Database.Migrate(); // Migration çalışıtırılmadıysa çalıştırılacak.
+            context.Database.EnsureCreated();
+            context.Database.Migrate();
             seeder(context, services);
         }
     }
