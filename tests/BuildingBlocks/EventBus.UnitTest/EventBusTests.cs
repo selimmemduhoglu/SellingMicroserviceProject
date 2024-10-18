@@ -16,37 +16,111 @@ public class EventBusTests
 
     public EventBusTests()
     {
-        services = new ServiceCollection(); //bunun kulalnılma amacı ServiceProvider elde etmek için
-        //services.AddLogging(configure => configure.AddConsole());
+        services = new ServiceCollection();
+        services.AddLogging(configure => configure.AddConsole());
     }
 
     [TestMethod]
     public void subscribe_event_on_rabbitmq_test()
     {
-        //Burası şey demek senden ne zaman ki   IEventBus Interface ile ile birşey istenirse git return EventBusFactory.Create(config, sp); bu işlemi yap demek. (yani Create ettiği için Service Bus ı ayağa kaldırmış oldu.)
         services.AddSingleton<IEventBus>(sp =>
         {
-            EventBusConfig config = new()
-            {
-                ConnectionRetryCount = 5,
-                SubscriptionClientAppName = "EventBus.UnitTest",
-                DefaultTopicName = "SellingBuddyTopicName",
-                EventBusType = EventBusType.RabbitMQ, //Burada hangi EventBus ı istediğimizi söyledik
-                EventNameSuffix = "IntegrationEvent",
-            };
-
-            return EventBusFactory.Create(config, sp);
-
+            return EventBusFactory.Create(GetRabbitMQConfig(), sp);
         });
+
 
         var sp = services.BuildServiceProvider();
 
         var eventBus = sp.GetRequiredService<IEventBus>();
 
         eventBus.Subscribe<OrderCreatedIntegrationEvent, OrderCreatedIntegrationEventHandler>();
-        // Bir istek geldiği zaman, bir mesaj geldiği zaman OrderCreatedIntegrationEvent ' e git OrderCreatedIntegrationEventHandler ' ı kullan demiş olduk.
+        //eventBus.UnSubscribe<OrderCreatedIntegrationEvent, OrderCreatedIntegrationEventHandler>();
+    }
 
-        eventBus.UnSubscribe<OrderCreatedIntegrationEvent, OrderCreatedIntegrationEventHandler>();
+    [TestMethod]
+    public void subscribe_event_on_azure_test()
+    {
+        services.AddSingleton<IEventBus>(sp =>
+        {
+            return EventBusFactory.Create(GetAzureConfig(), sp);
+        });
 
+
+        var sp = services.BuildServiceProvider();
+
+        var eventBus = sp.GetRequiredService<IEventBus>();
+
+        eventBus.Subscribe<OrderCreatedIntegrationEvent, OrderCreatedIntegrationEventHandler>();
+        //eventBus.UnSubscribe<OrderCreatedIntegrationEvent, OrderCreatedIntegrationEventHandler>();
+
+        Task.Delay(2000).Wait();
+    }
+
+    [TestMethod]
+    public void send_message_to_rabbitmq_test()
+    {
+        services.AddSingleton<IEventBus>(sp =>
+        {
+            return EventBusFactory.Create(GetRabbitMQConfig(), sp);
+        });
+
+
+        var sp = services.BuildServiceProvider();
+
+        var eventBus = sp.GetRequiredService<IEventBus>();
+
+        eventBus.Publish(new OrderCreatedIntegrationEvent(1));
+    }
+
+    [TestMethod]
+    public void send_message_to_azure_test()
+    {
+        services.AddSingleton<IEventBus>(sp =>
+        {
+            return EventBusFactory.Create(GetAzureConfig(), sp);
+        });
+
+
+        var sp = services.BuildServiceProvider();
+
+        var eventBus = sp.GetRequiredService<IEventBus>();
+
+        eventBus.Publish(new OrderCreatedIntegrationEvent(1));
+    }
+
+
+
+
+
+    private EventBusConfig GetAzureConfig()
+    {
+        return new EventBusConfig()
+        {
+            ConnectionRetryCount = 5,
+            SubscriberClientAppName = "EventBus.UnitTest",
+            DefaultTopicName = "SellingBuddyTopicName",
+            EventBusType = EventBusType.AzureServiceBus,
+            EventNameSuffix = "IntegrationEvent",
+            EventBusConnectionString = "Endpoint=sb://techbuddy.servicebus.windows.net/;SharedAccessKeyName=NewPolicyForYTVideos;SharedAccessKey=7sJghGWFOXaUaRblrbzOIIf4bQk6qkbTN/SEnKjXLpE="
+        };
+    }
+
+    private EventBusConfig GetRabbitMQConfig()
+    {
+        return new EventBusConfig()
+        {
+            ConnectionRetryCount = 5,
+            SubscriberClientAppName = "EventBus.UnitTest",
+            DefaultTopicName = "SellingBuddyTopicName",
+            EventBusType = EventBusType.RabbitMQ,
+            EventNameSuffix = "IntegrationEvent",
+            //Connection = new ConnectionFactory()
+            //{ 
+            //    HostName = "localhost",
+            //    Port = 15672,
+            //    UserName = "guest",
+            //    Password = "guest"
+            //}
+        };
     }
 }

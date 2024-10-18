@@ -5,7 +5,7 @@ public class EventBusConfig
     public int ConnectionRetryCount { get; set; } = 5; // Bağlanırken en fazla 5 kere dene
     public string DefaultTopicName { get; set; } = "SellingEventBus"; // Default Topic Name (Bu topic name in altına kuyrukları oluşturucaz.)
     public string EventBusConnectionString { get; set; } = String.Empty;
-    public string SubscriptionClientAppName { get; set; } = String.Empty;
+    public string SubscriberClientAppName { get; set; } = String.Empty;
     public string EventNamePrefix { get; set; } = String.Empty;  // (Trimlemek için)
     public string EventNameSuffix { get; set; } = "IntegrationEvent"; // (Trimlemek için)
     public EventBusType EventBusType { get; set; } = EventBusType.RabbitMQ; // Defaultta EventBus olarak RabbitMQ kullanıcaz (parametre gönderilmezse)
