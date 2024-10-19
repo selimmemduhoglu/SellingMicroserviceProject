@@ -45,7 +45,7 @@ namespace PaymentService.Api
                 configure.AddDebug();
             });
 
-            services.AddTransient<OrderStartedIntegrationEventHandler>();
+            services.AddTransient<OrderStartedIntegrationEventHandler>(); // Bunun eklenme amacý BaseEventBus ta ki methodun çalýþabilmesi için çünkü newlenmesi lazým çaðrýldýðýnda kullanýlabilmesi için.
 
             services.AddSingleton<IEventBus>(sp =>
             {
@@ -96,6 +96,8 @@ namespace PaymentService.Api
 
             IEventBus eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
             eventBus.Subscribe<OrderStartedIntegrationEvent, OrderStartedIntegrationEventHandler>();
+
+            //Burada ki 2 satýrda event dinleyebiliyoruz.
         }
     }
 }

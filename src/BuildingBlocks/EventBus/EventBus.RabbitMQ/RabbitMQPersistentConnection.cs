@@ -39,7 +39,6 @@ namespace EventBus.RabbitMQ
             connection.Dispose();
         }
 
-
         public bool TryConnect()
         {
             lock (lock_object)
