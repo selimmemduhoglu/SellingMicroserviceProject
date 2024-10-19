@@ -2,23 +2,23 @@
 using EventBus.Base;
 using EventBus.Base.Abstraction;
 using EventBus.RabbitMQ;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace EventBus.Factory;
-
-
-// Hangi EventBus kullanılacaksa dışardan parametre alıp onun kullanılması için belirleyici static classıdır.
-// Bu kullanım güzel bir kullanım yenilikçi
-public static class EventBusFactory
+namespace EventBus.Factory
 {
-    public static IEventBus Create(EventBusConfig config, IServiceProvider serviceProvider)
+    public static class EventBusFactory
     {
-        return config.EventBusType switch
+        public static IEventBus Create(EventBusConfig config, IServiceProvider serviceProvider)
         {
-            EventBusType.AzureServiceBus => new EventBusServiceBus(serviceProvider, config),
-            _ => new EventBusRabbitMQ(serviceProvider, config)
-
-        };
-
+            return config.EventBusType switch
+            {
+                EventBusType.AzureServiceBus => new EventBusServiceBus(config, serviceProvider),
+                _ => new EventBusRabbitMQ(config, serviceProvider),
+            };
+        }
     }
-
 }

@@ -1,4 +1,6 @@
-﻿namespace EventBus.Base;
+﻿using System;
+
+namespace EventBus.Base;
 
 public class EventBusConfig
 {

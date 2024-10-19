@@ -1,4 +1,5 @@
 ﻿using EventBus.Base.Events;
+using System.Threading.Tasks;
 
 namespace EventBus.Base.Abstraction;
 
