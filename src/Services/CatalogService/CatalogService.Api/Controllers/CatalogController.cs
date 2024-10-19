@@ -34,11 +34,12 @@ namespace CatalogService.Api.Controllers
         [ProducesResponseType(typeof(PaginatedItemsViewModel<CatalogItem>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(IEnumerable<CatalogItem>), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        // Bu attributelerin olayı swagger daha iyi anlasın diye
         public async Task<IActionResult> ItemsAsync([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 0, string ids = null)
         {
             if (!string.IsNullOrEmpty(ids))
             {
-                var items = await GetItemsByIdsAsync(ids);
+                List<CatalogItem> items = await GetItemsByIdsAsync(ids);
 
                 if (!items.Any())
                 {
@@ -48,10 +49,10 @@ namespace CatalogService.Api.Controllers
                 return Ok(items);
             }
 
-            var totalItems = await _catalogContext.CatalogItems
+            long totalItems = await _catalogContext.CatalogItems
                 .LongCountAsync();
 
-            var itemsOnPage = await _catalogContext.CatalogItems
+            List<CatalogItem> itemsOnPage = await _catalogContext.CatalogItems
                 .OrderBy(c => c.Name)
                 .Skip(pageSize * pageIndex)
                 .Take(pageSize)
@@ -59,7 +60,7 @@ namespace CatalogService.Api.Controllers
 
             itemsOnPage = ChangeUriPlaceholder(itemsOnPage);
 
-            var model = new PaginatedItemsViewModel<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage);
+            PaginatedItemsViewModel<CatalogItem> model = new PaginatedItemsViewModel<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage);
 
             return Ok(model);
         }
@@ -290,7 +291,7 @@ namespace CatalogService.Api.Controllers
 
         private List<CatalogItem> ChangeUriPlaceholder(List<CatalogItem> items)
         {
-            var baseUri = _settings.PicBaseUrl;
+            string baseUri = _settings.PicBaseUrl;
 
             foreach (var item in items)
             {

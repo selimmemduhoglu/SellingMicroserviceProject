@@ -22,7 +22,7 @@ namespace CatalogService.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public IActionResult Get()
         {
             return Ok("App and Running");
         }

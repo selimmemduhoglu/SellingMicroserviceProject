@@ -29,7 +29,7 @@ namespace CatalogService.Api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CatalogService.Api", Version = "v1" });
             });
 
-            services.Configure<CatalogSettings>(Configuration.GetSection("CatalogSettings"));
+            services.Configure<CatalogSettings>(Configuration.GetSection("CatalogSettings")); //burada ki imagelarýn hangi klasör altýnda olduðunu söylemek için.
             services.ConfigureDbContext(Configuration);
 
             services.ConfigureConsul(Configuration);
@@ -62,7 +62,7 @@ namespace CatalogService.Api
                 endpoints.MapControllers();
             });
 
-            app.RegisterWithConsul(lifetime, Configuration);
+            //app.RegisterWithConsul(lifetime, Configuration);
         }
     }
 }
