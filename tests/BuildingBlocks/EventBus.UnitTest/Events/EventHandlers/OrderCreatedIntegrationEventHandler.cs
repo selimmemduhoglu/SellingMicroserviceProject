@@ -5,7 +5,7 @@ namespace EventBus.UnitTest.Events.EventHandlers;
 
 public class OrderCreatedIntegrationEventHandler : IIntegrationEventHandler<OrderCreatedIntegrationEvent>
 {
-    public Task Handler(OrderCreatedIntegrationEvent @event)
+    public Task Handle(OrderCreatedIntegrationEvent @event)
     {
         return Task.CompletedTask;
     }
