@@ -18,8 +18,8 @@ namespace PaymentService.Api
             {
                 return new ConfigurationBuilder()
                     .SetBasePath(System.IO.Directory.GetCurrentDirectory())
-                    .AddJsonFile($"appsettings.json", optional: false)
-                    .AddJsonFile($"appsettings.{env}.json", optional: true)
+                    .AddJsonFile($"Configurations/appsettings.json", optional: false)
+                    .AddJsonFile($"Configurations/appsettings.{env}.json", optional: true)
                     .AddEnvironmentVariables()
                     .Build();
             }
@@ -31,8 +31,8 @@ namespace PaymentService.Api
             {
                 return new ConfigurationBuilder()
                     .SetBasePath(System.IO.Directory.GetCurrentDirectory())
-                    .AddJsonFile($"serilog.json", optional: false)
-                    .AddJsonFile($"serilog.{env}.json", optional: true)
+                    .AddJsonFile($"Configurations/serilog.json", optional: false)
+                    .AddJsonFile($"Configurations/serilog.{env}.json", optional: true)
                     .AddEnvironmentVariables()
                     .Build();
             }

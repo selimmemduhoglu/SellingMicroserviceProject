@@ -20,8 +20,7 @@ namespace PaymentService.Api.IntegrationEvents.EventHandlers
             this.logger = logger;
         }
 
-
-        public Task Handler(OrderStartedIntegrationEvent @event)
+        public Task Handle(OrderStartedIntegrationEvent @event)
         {
             // Fake payment process
             string keyword = "PaymentSuccess";
@@ -37,5 +36,7 @@ namespace PaymentService.Api.IntegrationEvents.EventHandlers
 
             return Task.CompletedTask;
         }
+
+       
     }
 }

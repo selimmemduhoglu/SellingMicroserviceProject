@@ -1,14 +1,16 @@
 ﻿using EventBus.Base.Events;
 using System.Threading.Tasks;
 
-namespace EventBus.Base.Abstraction;
-
-public interface IIntegrationEventHandler<TIntegrationEvent> : IntegrationEventHandler where TIntegrationEvent : IntegrationEvent
+namespace EventBus.Base.Abstraction
 {
-    Task Handler(TIntegrationEvent @event);
-}
+    public interface IIntegrationEventHandler<TIntegrationEvent> : IntegrationEventHandler where TIntegrationEvent : IntegrationEvent
+    {
+        Task Handle(TIntegrationEvent @event);
+    }
 
-public interface IntegrationEventHandler
-{
 
+    public interface IntegrationEventHandler
+    {
+
+    }
 }

@@ -3,8 +3,6 @@ using EventBus.Base.Abstraction;
 using EventBus.Factory;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -13,10 +11,6 @@ using Microsoft.OpenApi.Models;
 using PaymentService.Api.IntegrationEvents.EventHandlers;
 using PaymentService.Api.IntegrationEvents.Events;
 using RabbitMQ.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PaymentService.Api
 {
@@ -45,7 +39,7 @@ namespace PaymentService.Api
                 configure.AddDebug();
             });
 
-            services.AddTransient<OrderStartedIntegrationEventHandler>(); // Bunun eklenme amacý BaseEventBus ta ki methodun çalýþabilmesi için çünkü newlenmesi lazým çaðrýldýðýnda kullanýlabilmesi için.
+            services.AddTransient<OrderStartedIntegrationEventHandler>();
 
             services.AddSingleton<IEventBus>(sp =>
             {
@@ -96,8 +90,6 @@ namespace PaymentService.Api
 
             IEventBus eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
             eventBus.Subscribe<OrderStartedIntegrationEvent, OrderStartedIntegrationEventHandler>();
-
-            //Burada ki 2 satýrda event dinleyebiliyoruz.
         }
     }
 }

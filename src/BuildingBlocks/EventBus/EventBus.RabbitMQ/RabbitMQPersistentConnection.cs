@@ -2,11 +2,7 @@
 using RabbitMQ.Client;
 using RabbitMQ.Client.Exceptions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EventBus.RabbitMQ
 {
@@ -32,12 +28,12 @@ namespace EventBus.RabbitMQ
         {
             return connection.CreateModel();
         }
-
         public void Dispose()
         {
             _disposed = true;
             connection.Dispose();
         }
+
 
         public bool TryConnect()
         {
@@ -68,21 +64,18 @@ namespace EventBus.RabbitMQ
                 return false;
             }
         }
-
         private void Connection_ConnectionBlocked(object sender, global::RabbitMQ.Client.Events.ConnectionBlockedEventArgs e)
         {
             if (_disposed) return;
 
             TryConnect();
         }
-
         private void Connection_CallbackException(object sender, global::RabbitMQ.Client.Events.CallbackExceptionEventArgs e)
         {
             if (_disposed) return;
 
             TryConnect();
         }
-
         private void Connection_ConnectionShutdown(object sender, ShutdownEventArgs e)
         {
             // log Connection_ConnectionShutdown
