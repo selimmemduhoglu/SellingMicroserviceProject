@@ -92,14 +92,15 @@ namespace BasketService.Api
                 return EventBusFactory.Create(config, sp);
             });
 
-            services.AddTransient<OrderCreatedIntegrationEventHandler>();
+            services.AddTransient<OrderCreatedIntegrationEventHandler>(); // OrderCreatedIntegrationEventHandler mekanizmasýnýn çalýþmasý için .
         }
 
         private void ConfigureSubscription(IServiceProvider serviceProvider)
         {
             IEventBus eventBus = serviceProvider.GetRequiredService<IEventBus>();
-
             eventBus.Subscribe<OrderCreatedIntegrationEvent, OrderCreatedIntegrationEventHandler>();
+
+
         }
     }
 }

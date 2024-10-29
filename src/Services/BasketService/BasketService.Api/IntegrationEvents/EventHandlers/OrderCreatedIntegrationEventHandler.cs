@@ -1,11 +1,6 @@
 ﻿using BasketService.Api.Core.Application.Repository;
 using BasketService.Api.IntegrationEvents.Events;
 using EventBus.Base.Abstraction;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BasketService.Api.IntegrationEvents.EventHanders
 {
@@ -25,6 +20,10 @@ namespace BasketService.Api.IntegrationEvents.EventHanders
             _logger.LogInformation("----- Handling integration event: {IntegrationEventId} at BasketService.Api - ({@IntegrationEvent})", @event.Id, @event);
 
             await _repository.DeleteBasketAsync(@event.UserId);
+
+            // Buranın amacı basket tekilerin order a gitmesi için eventBus a göndermemeiz gerekiğyor.
+            //Burada da rabbitmq ya gönderildiğini basket servisine de haber veriyor ki gidip baskettekileri silsin.
+
         }
     }
 }
