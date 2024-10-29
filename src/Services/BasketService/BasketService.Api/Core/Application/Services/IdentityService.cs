@@ -1,13 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Security.Claims;
 
 namespace BasketService.Api.Core.Application.Services
 {
-    public class IdentityService: IIdentityService
+    public class IdentityService : IIdentityService
     {
         private readonly IHttpContextAccessor httpContextAccessor;
 

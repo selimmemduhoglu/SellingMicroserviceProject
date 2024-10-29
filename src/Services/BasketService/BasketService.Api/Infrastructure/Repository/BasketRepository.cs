@@ -1,12 +1,7 @@
 ﻿using BasketService.Api.Core.Application.Repository;
 using BasketService.Api.Core.Domain.Models;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using StackExchange.Redis;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BasketService.Api.Infrastructure.Repository
 {
@@ -15,6 +10,8 @@ namespace BasketService.Api.Infrastructure.Repository
         private readonly ILogger<RedisBasketRepository> _logger;
         private readonly ConnectionMultiplexer _redis;
         private readonly IDatabase _database;
+
+
 
         public RedisBasketRepository(ILoggerFactory loggerFactory, ConnectionMultiplexer redis)
         {
@@ -27,15 +24,13 @@ namespace BasketService.Api.Infrastructure.Repository
         {
             return await _database.KeyDeleteAsync(id);
         }
-
         public IEnumerable<string> GetUsers()
         {
-            var server = GetServer();
-            var data = server.Keys();
+            IServer server = GetServer();
+            IEnumerable<RedisKey> data = server.Keys();
 
             return data?.Select(k => k.ToString());
         }
-
         public async Task<CustomerBasket> GetBasketAsync(string customerId)
         {
             var data = await _database.StringGetAsync(customerId);
@@ -47,7 +42,6 @@ namespace BasketService.Api.Infrastructure.Repository
 
             return JsonConvert.DeserializeObject<CustomerBasket>(data);
         }
-
         public async Task<CustomerBasket> UpdateBasketAsync(CustomerBasket basket)
         {
             var created = await _database.StringSetAsync(basket.BuyerId, JsonConvert.SerializeObject(basket));
@@ -62,6 +56,8 @@ namespace BasketService.Api.Infrastructure.Repository
 
             return await GetBasketAsync(basket.BuyerId);
         }
+
+
 
         private IServer GetServer()
         {

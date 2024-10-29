@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BasketService.Api.Core.Domain.Models
 {
-    public class BasketItem: IValidatableObject
+    public class BasketItem : IValidatableObject
     {
         public string Id { get; set; }
         public int ProductId { get; set; }
