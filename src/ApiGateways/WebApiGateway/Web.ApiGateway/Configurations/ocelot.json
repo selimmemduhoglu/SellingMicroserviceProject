@@ -3,6 +3,7 @@
     {
       "UseServiceDiscovery": true,
       "ServiceName": "CatalogService",
+
       "DownstreamPathTemplate": "/api/catalog/{everything}",
       "DownstreamScheme": "http",
 
