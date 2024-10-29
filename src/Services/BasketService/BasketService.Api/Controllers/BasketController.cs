@@ -41,7 +41,7 @@ namespace BasketService.Api.Controllers
         [ProducesResponseType(typeof(CustomerBasket), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<CustomerBasket>> GetBasketByIdAsync(string id)
         {
-            var basket = await repository.GetBasketAsync(id);
+            CustomerBasket basket = await repository.GetBasketAsync(id);
 
             return Ok(basket ?? new CustomerBasket(id));
         }
@@ -60,9 +60,9 @@ namespace BasketService.Api.Controllers
         [HttpPost]
         public async Task<ActionResult> AddItemToBasket([FromBody] BasketItem basketItem)
         {
-            var userId = identityService.GetUserName().ToString();
+            string userId = identityService.GetUserName().ToString();
 
-            var basket = await repository.GetBasketAsync(userId);
+            CustomerBasket basket = await repository.GetBasketAsync(userId);
 
             if (basket == null)
             {
@@ -82,19 +82,19 @@ namespace BasketService.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult> CheckoutAsync([FromBody] BasketCheckout basketCheckout)
         {
-            var userId = basketCheckout.Buyer;
+            string userId = basketCheckout.Buyer;
             //var userId = basketCheckout.UserId.ToString();
 
-            var basket = await repository.GetBasketAsync(userId);
+            CustomerBasket basket = await repository.GetBasketAsync(userId);
 
             if (basket == null)
             {
                 return BadRequest();
             }
 
-            var userName = identityService.GetUserName();
+            string userName = identityService.GetUserName();
 
-            var eventMessage = new OrderCreatedIntegrationEvent(userId, userName, basketCheckout.City, basketCheckout.Street,
+            OrderCreatedIntegrationEvent eventMessage = new OrderCreatedIntegrationEvent(userId, userName, basketCheckout.City, basketCheckout.Street,
                 basketCheckout.State, basketCheckout.Country, basketCheckout.ZipCode, basketCheckout.CardNumber, basketCheckout.CardHolderName,
                 basketCheckout.CardExpiration, basketCheckout.CardSecurityNumber, basketCheckout.CardTypeId, basketCheckout.Buyer, basket);
 

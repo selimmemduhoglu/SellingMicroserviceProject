@@ -87,21 +87,6 @@ namespace BasketService.Api
                     EventNameSuffix = "IntegrationEvent",
                     SubscriberClientAppName = "BasketService",
                     EventBusType = EventBusType.RabbitMQ,
-                    Connection = new ConnectionFactory()
-                    {
-                        //HostName = "localhost"
-                        //HostName = "localhost",
-                        //Port = 15672,
-                        //UserName = "guest",
-                        //Password = "guest",
-                        //VirtualHost="/"
-                    }
-
-                    //Connection = new ConnectionFactory()
-                    //{
-                    //    //HostName = "c_rabbitmq"
-                    //    HostName = "http://localhost:15672"
-                    //}
                 };
 
                 return EventBusFactory.Create(config, sp);
@@ -112,7 +97,7 @@ namespace BasketService.Api
 
         private void ConfigureSubscription(IServiceProvider serviceProvider)
         {
-            var eventBus = serviceProvider.GetRequiredService<IEventBus>();
+            IEventBus eventBus = serviceProvider.GetRequiredService<IEventBus>();
 
             eventBus.Subscribe<OrderCreatedIntegrationEvent, OrderCreatedIntegrationEventHandler>();
         }

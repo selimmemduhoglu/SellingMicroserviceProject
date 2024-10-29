@@ -6,7 +6,7 @@ namespace BasketService.Api.Extensions.Registration
     {
         public static ConnectionMultiplexer ConfigureRedis(this IServiceProvider services, IConfiguration configuration)
         {
-            var redisConf = ConfigurationOptions.Parse(configuration["RedisSettings:ConnectionString"], true);
+            ConfigurationOptions redisConf = ConfigurationOptions.Parse(configuration["RedisSettings:ConnectionString"], true);
             redisConf.ResolveDns = true;
 
             return ConnectionMultiplexer.Connect(redisConf);
