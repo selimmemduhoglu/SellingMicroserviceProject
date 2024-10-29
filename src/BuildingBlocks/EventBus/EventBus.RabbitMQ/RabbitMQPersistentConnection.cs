@@ -28,6 +28,7 @@ namespace EventBus.RabbitMQ
         {
             return connection.CreateModel();
         }
+
         public void Dispose()
         {
             _disposed = true;
@@ -64,18 +65,21 @@ namespace EventBus.RabbitMQ
                 return false;
             }
         }
+
         private void Connection_ConnectionBlocked(object sender, global::RabbitMQ.Client.Events.ConnectionBlockedEventArgs e)
         {
             if (_disposed) return;
 
             TryConnect();
         }
+
         private void Connection_CallbackException(object sender, global::RabbitMQ.Client.Events.CallbackExceptionEventArgs e)
         {
             if (_disposed) return;
 
             TryConnect();
         }
+
         private void Connection_ConnectionShutdown(object sender, ShutdownEventArgs e)
         {
             // log Connection_ConnectionShutdown

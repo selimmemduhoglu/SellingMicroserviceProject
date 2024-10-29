@@ -2,6 +2,7 @@
 using EventBus.Base.Events;
 using Newtonsoft.Json;
 using Polly;
+using Polly.Retry;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
@@ -70,35 +71,25 @@ namespace EventBus.RabbitMQ
                 persistentConnection.TryConnect();
             }
 
-            var policy = Policy.Handle<BrokerUnreachableException>()
+            RetryPolicy policy = Policy.Handle<BrokerUnreachableException>()
                 .Or<SocketException>()
                 .WaitAndRetry(EventBusConfig.ConnectionRetryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
                 {
                     // log
                 });
 
-            var eventName = @event.GetType().Name;
+            string eventName = @event.GetType().Name;
             eventName = ProcessEventName(eventName);
 
             consumerChannel.ExchangeDeclare(exchange: EventBusConfig.DefaultTopicName, type: "direct"); // Ensure exchange exists while publishing
 
-            var message = JsonConvert.SerializeObject(@event);
-            var body = Encoding.UTF8.GetBytes(message);
+            string message = JsonConvert.SerializeObject(@event);
+            byte[] body = Encoding.UTF8.GetBytes(message);
 
             policy.Execute(() =>
             {
-                var properties = consumerChannel.CreateBasicProperties();
+                IBasicProperties properties = consumerChannel.CreateBasicProperties();
                 properties.DeliveryMode = 2; // persistent
-
-                //consumerChannel.QueueDeclare(queue: GetSubName(eventName), // Ensure queue exists while publishing
-                //                     durable: true,
-                //                     exclusive: false,
-                //                     autoDelete: false,
-                //                     arguments: null);
-
-                //consumerChannel.QueueBind(queue: GetSubName(eventName),
-                //                  exchange: EventBusConfig.DefaultTopicName,
-                //                  routingKey: eventName);
 
                 consumerChannel.BasicPublish(
                     exchange: EventBusConfig.DefaultTopicName,
@@ -111,7 +102,7 @@ namespace EventBus.RabbitMQ
 
         public override void Subscribe<T, TH>()
         {
-            var eventName = typeof(T).Name;
+            string eventName = typeof(T).Name;
             eventName = ProcessEventName(eventName);
 
             if (!SubsManager.HasSubscriptionsForEvent(eventName))
@@ -149,7 +140,7 @@ namespace EventBus.RabbitMQ
                 persistentConnection.TryConnect();
             }
 
-            var channel = persistentConnection.CreateModel();
+            IModel channel = persistentConnection.CreateModel();
 
             channel.ExchangeDeclare(exchange: EventBusConfig.DefaultTopicName,
                                     type: "direct");
@@ -174,9 +165,9 @@ namespace EventBus.RabbitMQ
 
         private async void Consumer_Received(object sender, BasicDeliverEventArgs eventArgs)
         {
-            var eventName = eventArgs.RoutingKey;
+            string eventName = eventArgs.RoutingKey;
             eventName = ProcessEventName(eventName);
-            var message = Encoding.UTF8.GetString(eventArgs.Body.Span);
+            string message = Encoding.UTF8.GetString(eventArgs.Body.Span);
 
             try
             {

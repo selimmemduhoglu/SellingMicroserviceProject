@@ -3,23 +3,20 @@ using EventBus.Base.Abstraction;
 using EventBus.Factory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using NotificationService.IntegrationEvents.EventHandlers;
 using PaymentService.Api.IntegrationEvents.Events;
 using RabbitMQ.Client;
 using Serilog;
-using System;
-using System.Threading.Tasks;
 
 namespace NotificationService
 {
     class Program
     {
         private static string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-
+     
         static void Main(string[] args)
         {
-            var services = new ServiceCollection();
+            ServiceCollection services = new ServiceCollection();
 
             ConfigureServices(services);
 
@@ -27,7 +24,9 @@ namespace NotificationService
                 .ReadFrom.Configuration(serilogConfiguration)
                 .CreateLogger();
 
-            var sp = services.BuildServiceProvider();
+            ServiceProvider sp = services.BuildServiceProvider();
+
+            // Burada handle'a haber veriyoruz.
 
             IEventBus eventBus = sp.GetRequiredService<IEventBus>();
 
@@ -53,8 +52,15 @@ namespace NotificationService
                     EventBusType = EventBusType.RabbitMQ,
                     Connection = new ConnectionFactory()
                     {
-                        HostName = "c_rabbitmq"
-                    }
+                        HostName = "localhost",
+                        Port = 15672,
+                        UserName = "guest",
+                        Password = "guest"
+                    },
+                    //Connection = new ConnectionFactory()
+                    //{
+                    //    HostName = "c_rabbitmq"
+                    //}
                 };
 
                 return EventBusFactory.Create(config, sp);
@@ -66,7 +72,7 @@ namespace NotificationService
             get
             {
                 return new ConfigurationBuilder()
-                    .SetBasePath(System.IO.Directory.GetCurrentDirectory())
+                    .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile($"Configurations/serilog.json", optional: false)
                     .AddJsonFile($"Configurations/serilog.{env}.json", optional: true)
                     .AddEnvironmentVariables()
