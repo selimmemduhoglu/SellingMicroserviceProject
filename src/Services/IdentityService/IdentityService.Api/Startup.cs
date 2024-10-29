@@ -27,10 +27,10 @@ namespace IdentityService.Api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "IdentityService.Api", Version = "v1" });
             });
 
-            services.ConfigureConsul(Configuration);
+            //services.ConfigureConsul(Configuration);
 
-            services.AddHealthChecks()
-                .AddCheck("self", () => HealthCheckResult.Healthy());
+            //services.AddHealthChecks()
+            //    .AddCheck("self", () => HealthCheckResult.Healthy());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,23 +53,23 @@ namespace IdentityService.Api
             {
                 endpoints.MapControllers();
 
-                endpoints.MapHealthChecks("/hc", new HealthCheckOptions()
-                {
-                    Predicate = _ => true,
-                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-                });
+                //endpoints.MapHealthChecks("/hc", new HealthCheckOptions()
+                //{
+                //    Predicate = _ => true,
+                //    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                //});
 
-                endpoints.MapHealthChecks("/liveness", new HealthCheckOptions
-                {
-                    Predicate = r => r.Name.Contains("self"),
-                    ResponseWriter = async (context, healthReport) =>
-                    {
-                        await Task.CompletedTask;
-                    }
-                });
+                //endpoints.MapHealthChecks("/liveness", new HealthCheckOptions
+                //{
+                //    Predicate = r => r.Name.Contains("self"),
+                //    ResponseWriter = async (context, healthReport) =>
+                //    {
+                //        await Task.CompletedTask;
+                //    }
+                //});
             });
 
-            app.RegisterWithConsul(lifetime, Configuration);
+            //app.RegisterWithConsul(lifetime, Configuration);
         }
     }
 }

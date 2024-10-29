@@ -50,7 +50,7 @@ namespace IdentityService.Api
 
         public static void Main(string[] args)
         {
-            var host = BuildWebHost(configuration, args);
+            IWebHost host = BuildWebHost(configuration, args);
 
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(serilogConfiguration)
