@@ -1,4 +1,5 @@
 ﻿using EventBus.Base.Events;
+using System;
 
 namespace PaymentService.Api.IntegrationEvents.Events
 {

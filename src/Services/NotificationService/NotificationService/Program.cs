@@ -7,13 +7,15 @@ using NotificationService.IntegrationEvents.EventHandlers;
 using PaymentService.Api.IntegrationEvents.Events;
 using RabbitMQ.Client;
 using Serilog;
+using System;
+using System.IO;
 
 namespace NotificationService
 {
     class Program
     {
         private static string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-     
+
         static void Main(string[] args)
         {
             ServiceCollection services = new ServiceCollection();
@@ -42,7 +44,7 @@ namespace NotificationService
             services.AddTransient<OrderPaymentFailedIntegrationEventHandler>();
             services.AddTransient<OrderPaymentSuccessIntegrationEventHandler>();
 
-            services.AddSingleton(sp =>
+            services.AddSingleton<IEventBus>(sp =>
             {
                 EventBusConfig config = new()
                 {
@@ -50,13 +52,14 @@ namespace NotificationService
                     EventNameSuffix = "IntegrationEvent",
                     SubscriberClientAppName = "NotificationService",
                     EventBusType = EventBusType.RabbitMQ,
-                    Connection = new ConnectionFactory()
-                    {
-                        HostName = "localhost",
-                        Port = 15672,
-                        UserName = "guest",
-                        Password = "guest"
-                    },
+                    //Connection = new ConnectionFactory()
+                    //{
+                    //    HostName = "localhost",
+                    //    Port = 15672,
+                    //    UserName = "guest",
+                    //    Password = "guest",
+                        
+                    //},
                     //Connection = new ConnectionFactory()
                     //{
                     //    HostName = "c_rabbitmq"

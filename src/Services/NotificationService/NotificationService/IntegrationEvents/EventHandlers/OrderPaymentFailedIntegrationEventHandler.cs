@@ -1,6 +1,7 @@
 ﻿using EventBus.Base.Abstraction;
 using PaymentService.Api.IntegrationEvents.Events;
 using Serilog;
+using System.Threading.Tasks;
 
 namespace NotificationService.IntegrationEvents.EventHandlers
 {

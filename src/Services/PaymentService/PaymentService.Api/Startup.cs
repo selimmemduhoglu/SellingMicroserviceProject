@@ -49,13 +49,13 @@ namespace PaymentService.Api
                     EventNameSuffix = "IntegrationEvent",
                     SubscriberClientAppName = "PaymentService",
                     EventBusType = EventBusType.RabbitMQ,
-                    Connection = new ConnectionFactory()
-                    {
-                        HostName = "localhost",
-                        Port = 15672,
-                        UserName = "guest",
-                        Password = "guest"
-                    },
+                    //Connection = new ConnectionFactory()
+                    //{
+                    //    HostName = "localhost",
+                    //    Port = 15672,
+                    //    UserName = "guest",
+                    //    Password = "guest"
+                    //},
                     //Connection = new ConnectionFactory()
                     //{
                     //    HostName = "c_rabbitmq"
