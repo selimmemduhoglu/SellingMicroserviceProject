@@ -6,26 +6,20 @@ using OrderService.Domain.SeedWork;
 using OrderService.Infrastructure.EntityConfigurations;
 using OrderService.Infrastructure.Extensions;
 using OrderService.Persistence.EntityConfigurations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace OrderService.Infrastructure.Context
 {
-    public class OrderDbContext: DbContext, IUnitOfWork
+    public class OrderDbContext : DbContext, IUnitOfWork
     {
         public const string DEFAULT_SCHEMA = "ordering";
         private readonly IMediator mediator;
 
-        public OrderDbContext(): base()
+        public OrderDbContext() : base()
         {
 
         }
 
-        public OrderDbContext(DbContextOptions<OrderDbContext> options, IMediator mediator): base(options)
+        public OrderDbContext(DbContextOptions<OrderDbContext> options, IMediator mediator) : base(options)
         {
             this.mediator = mediator;
         }
