@@ -16,7 +16,7 @@ namespace OrderService.Infrastructure.Extensions
             List<INotification> domainEvents = domainEntities
                 .SelectMany(x => x.Entity.DomainEvents)
                 .ToList();
-
+             
             domainEntities.ToList()
                 .ForEach(entity => entity.Entity.ClearDomainEvents());
 
