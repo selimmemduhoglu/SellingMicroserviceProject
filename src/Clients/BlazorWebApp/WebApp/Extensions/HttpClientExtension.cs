@@ -14,6 +14,7 @@ namespace WebApp.Extensions
             return httpRes.IsSuccessStatusCode ? await httpRes.Content.ReadFromJsonAsync<TResult>() : default;
         }
 
+
         public async static Task PostAsync<TValue>(this HttpClient Client, String Url, TValue Value)
         {
             await Client.PostAsJsonAsync(Url, Value);
