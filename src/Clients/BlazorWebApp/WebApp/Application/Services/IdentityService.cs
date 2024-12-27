@@ -36,9 +36,9 @@ namespace WebApp.Application.Services
 
         public async Task<bool> Login(string userName, string password)
         {
-            var req = new UserLoginRequest(userName, password);
+            UserLoginRequest req = new UserLoginRequest(userName, password);
 
-            var response = await httpClient.PostGetResponseAsync<UserLoginResponse, UserLoginRequest>("auth", req);
+            UserLoginResponse response = await httpClient.PostGetResponseAsync<UserLoginResponse, UserLoginRequest>("auth", req);
 
             if (!string.IsNullOrEmpty(response.UserToken)) // login success
             {

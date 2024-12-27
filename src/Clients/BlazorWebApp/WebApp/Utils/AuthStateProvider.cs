@@ -47,13 +47,13 @@ namespace WebApp.Utils
 
         public void NotifyUserLogin(String userName)
         {
-            var cp = new ClaimsPrincipal(new ClaimsIdentity(new[]
+            ClaimsPrincipal cp = new ClaimsPrincipal(new ClaimsIdentity(new[]
             {
                 new Claim(ClaimTypes.Name, userName)
 
             }, "jwtAuthType"));
 
-            var authState = Task.FromResult(new AuthenticationState(cp));
+            Task<AuthenticationState> authState = Task.FromResult(new AuthenticationState(cp));
 
             NotifyAuthenticationStateChanged(authState);
             appState.LoginChanged(null);
