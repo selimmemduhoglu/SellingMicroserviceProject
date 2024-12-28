@@ -12,7 +12,7 @@
 				<a href="#">@CatalogItem.Name</a>
 			</h3>
 			<div class="price">
-				TL @CatalogItem.Price.ToString("N2")
+				₺ @CatalogItem.Price.ToString("N2")
 			</div>
 			<a class="add-to-cart" href="javascript:void(0)" onclick="@OnClick">
 				Add to Cart
@@ -26,7 +26,7 @@
 @code {
 
 	[Parameter]
-	public CatalogItem CatalogItem { get; set; }
+	public CatalogItem CatalogItem { get; set; } = new();
 
 	[Parameter]
 	public EventCallback<MouseEventArgs> OnClick {  get;  set;  }
