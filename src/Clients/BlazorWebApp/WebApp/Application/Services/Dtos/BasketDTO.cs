@@ -22,10 +22,10 @@ namespace WebApp.Application.Services.Dtos
 
         public string ZipCode { get; set; }
 
-        [Required]
-        public string CardNumber { get; set; }
+		[Required]
+		public string CardNumber { get; set; }
 
-        [Required]
+		[Required]
         public string CardHolderName { get; set; }
 
         [Required]

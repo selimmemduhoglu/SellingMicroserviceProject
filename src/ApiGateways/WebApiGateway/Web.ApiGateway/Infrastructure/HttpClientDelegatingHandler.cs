@@ -12,7 +12,7 @@ namespace Web.ApiGateway.Infrastructure
     {
         private readonly IHttpContextAccessor httpContextAccessor;
 
-        public HttpClientDelegatingHandler(IHttpContextAccessor httpContextAccessor)
+        public HttpClientDelegatingHandler(IHttpContextAccessor httpContextAccessor) 
         {
             this.httpContextAccessor = httpContextAccessor;
         }
