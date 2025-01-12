@@ -1,4 +1,4 @@
-{
+ {
   "Serilog": {
     "Using": [ "Serilog.Sinks.Graylog", "Serilog.Sinks.Console" ],
     "MinimumLevel": "Information",
