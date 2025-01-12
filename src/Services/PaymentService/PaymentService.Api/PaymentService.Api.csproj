@@ -2,6 +2,10 @@
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
+		<IsServiceFabricServiceProject>True</IsServiceFabricServiceProject>
+		<UserSecretsId>5d482f5f-ae0b-4bf5-b2a7-4974af2ca81c</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<DockerfileContext>..\..\..\..</DockerfileContext>
 	</PropertyGroup>
 
 	<ItemGroup>
