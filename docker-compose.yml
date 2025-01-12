@@ -14,7 +14,7 @@ services:
     container_name: c_apigateway
     image: ${DOCKER_REGISTRY-}webapigateway
     build:
-      context: .
+      context: . 
       dockerfile: src/ApiGateways/WebApiGateway/Web.ApiGateway/Dockerfile
 
 

@@ -19,7 +19,7 @@ services:
       - "5000:5000"
     networks:
       - net_apigateway
-      - net_backendservices
+      - net_backendservices 
       #- net_frontend
 
   orderservice.api:
